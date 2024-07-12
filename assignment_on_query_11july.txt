@@ -1,0 +1,839 @@
+1.[
+  {
+  $group:{
+    _id:"$role",
+  averageSal:{$avg:"$salary"}
+  
+}
+  }
+]
+--------------------------------------
+2.[
+  {
+  $group:{
+    _id:"$city",
+  countofUsers:{$sum:1}
+  
+}
+  }
+]
+----------------------------------------
+3.[
+  {
+  $group:{
+    _id:"$gender",
+  averageAge:{$avg:"$age"}
+  
+}
+  }
+]
+-------------------------------
+4.[
+  {
+  $group:{
+    _id:{role:"$role",city:"$city"},
+    totalSalary: { $sum: "$salary" }
+  
+}
+  }
+]
+---------------------------
+5.[
+  {
+  $group:{
+    _id:{gender:"$gender",city:"$city"},
+    maxSalary: { $sum: "$salary" }
+  
+}
+  }
+]
+-----------------------------------
+6.[
+  { $unwind: "$skills" }, 
+  {
+    $group: {
+      _id: "$skills",
+      count: { $sum: 1 },
+    },
+  },
+]--------------------------
+ 7.[{ 
+    $group: {
+      _id: "$role",
+      minAge: { $min: "$age" } 
+    }
+  }
+]
+-------------------------------
+8.[
+  {
+  $group:{
+    _id:{city:"$city",gender:"$gender"},
+    averageSal:{$avg:"$salary"}
+  }
+}
+]
+---------------
+9.[
+  {
+    $group: {
+      _id: "$role", 
+      uniqueCities: { $addToSet: "$city" } 
+    }
+  },
+  {
+    $project: {
+      _id: 1, 
+      numberOfCities: { $size: "$uniqueCities" }
+    }
+  }
+]
+-----------------------------------------
+10.[
+  {
+  $group:{
+  _id:"$age",
+   countofUsers:{$sum:1}
+  }
+}
+]
+---------------------------------
+11.[
+  {
+    $group: {
+      _id: "$city", 
+      totalUsers: { $sum: 1 }, 
+      totalSkills: { $sum: { $size: "$skills" } } 
+    }
+  },
+  {
+    $project: {
+      _id: 1, 
+      avgSkillsPerUser: { $divide: ["$totalSkills", "$totalUsers"] } 
+    }
+  }
+
+]
+------------------------------
+12.[
+{ 
+    $group: { 
+      _id: "$role", 
+      highestSalary: { $max: "$salary" } 
+    } 
+  }
+]
+---------------------------
+13.[
+{
+        $group: {
+            _id: "$gender", 
+            count: { $sum: 1 }
+        }
+    }
+]
+-----------------------------
+14.[
+  {
+        $group: {
+            _id: "$city", 
+            averageAge: { $avg: "$age" } 
+        }
+    }
+]
+------------------------
+15.[
+  {
+        $group: {
+            _id: {
+                role: "$role",
+                gender: "$gender"
+            },
+            averageSalary: { $avg: "$salary" } 
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            role: "$_id.role",
+            gender: "$_id.gender",
+            averageSalary: 1
+        }
+    }
+]
+------------------------------------
+16.[
+  { 
+        $unwind: "$skills" 
+    },
+    {
+        $group: {
+            _id: "$skills", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+------------------------------------------
+17.[
+  {
+        $group: {
+            _id: "$age", 
+            maxSalary: { $max: "$salary" } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+---------------------------------------------------
+18.[
+  {
+        $addFields: {
+            numSkills: { $size: "$skills" } 
+        }
+    },
+    {
+        $match: {
+            numSkills: { $gt: 3 } 
+        }
+    },
+    {
+        $group: {
+            _id: "$role", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-------------------
+19.[
+   {
+        $group: {
+            _id: {
+                gender: "$gender",
+                city: "$city"
+            },
+            avgSkills: { $avg: { $size: "$skills" } }
+        }
+    },
+    {
+        $project: {
+            _id: 0, 
+            gender: "$_id.gender",
+            city: "$_id.city",
+            avgSkills: 1
+        }
+    }
+]
+-----------
+20. [
+   {
+        $group: {
+            _id: "$role", 
+            highestSalary: { $max: "$salary" }, 
+            lowestSalary: { $min: "$salary" } 
+        }
+    }
+ ]
+-------------------------------------
+21.[
+  {  $group: {
+            _id: {
+                city: "$city",
+                role: "$role"
+            },
+            count: { $sum: 1 } 
+        }
+    },
+    {
+        $group: {
+            _id: "$_id.city", 
+            avgUsersPerRole: { $avg: "$count" } 
+        }
+    }
+]
+--------------------------------
+22.[
+   {
+        $group: {
+            _id: {
+                role: "$role",
+                gender: "$gender"
+            },
+            totalSalary: { $sum: "$salary" } 
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            role: "$_id.role",
+            gender: "$_id.gender",
+            totalSalary: 1
+        }
+    }
+]
+----------------------------------------
+23. [
+{
+        $match: {
+            salary: { $gt: 1000000 } 
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            count: { $sum: 1 } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+--------------------------
+24.[
+  {
+        $unwind: "$skills" 
+    },
+    {
+        $group: {
+            _id: "$skills", 
+            avgSalary: { $avg: "$salary" } 
+        }
+    }
+]
+--------------------------------------------
+25.[
+   {
+        $group: {
+            _id: {
+                role: "$role",
+                city: "$city"
+            },
+            avgAge: { $avg: "$age" } 
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            role: "$_id.role",
+            city: "$_id.city",
+            avgAge: 1
+        }
+    }
+]
+--------------------------------
+26.[
+  {
+        $match: {
+            skills: "Java"
+        }
+    },
+    {
+        $group: {
+            _id: "$gender", 
+            count: { $sum: 1 } 
+        }
+    }
+  ]
+----------------------------------------------
+27.[
+  {
+        $project: {
+            city: 1,
+            numSkills: { $size: "$skills" } 
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            maxSkills: { $max: "$numSkills" } 
+        }
+    }
+]
+---------------------------
+28.[
+  {
+        $match: {
+            skills: "Python" 
+        }
+    },
+    {
+        $group: {
+            _id: "$role", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+------------------
+29.[
+  {
+        $match: {
+            $expr: { $gt: [{ $size: "$skills" }, 2] } 
+        }
+    },
+    {
+        $group: {
+            _id: {
+                gender: "$gender",
+                city: "$city"
+            },
+            avgSalary: { $avg: "$salary" } 
+        }
+    },
+    {
+        $project: {
+            _id: 0,
+            gender: "$_id.gender",
+            city: "$_id.city",
+            avgSalary: 1
+        }
+    }
+]
+----------------------------
+30.[
+   {
+        $group: {
+            _id: "$age", 
+            avgSkills: { $avg: { $size: "$skills" } } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+------------------------------------------------
+31.[
+  {
+        $match: {
+            role: "customer",
+            city: "Mumbai"
+        }
+    },
+    {
+        $group: {
+            _id:"$role", 
+            totalSalary: { $sum: "$salary" }
+        }
+    }
+]
+--------------------------------
+32.[
+  {
+        $match: {
+            role: "admin" 
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            maxSalary: { $max: "$salary" } 
+        }
+    }
+]
+-----------------------------------------------
+33.[
+   {
+        $match: {
+            salary: { $gt: 500000 }
+        }
+    },
+    {
+        $group: {
+            _id: "$gender", 
+            count: { $sum: 1 } 
+        }
+    }
+  
+]
+-------------------------------------------
+34.[
+    {
+        $unwind: "$skills" 
+    },
+    {
+        $group: {
+            _id: "$skills", 
+            avgAge: { $avg: "$age" } 
+        }
+    }
+  
+]
+----------------------------------------
+35.[
+   {
+        $match: {
+            salary: { $lt: 700000 } 
+        }
+    },
+    {
+        $group: {
+            _id: "$role", 
+            avgSkills: { $avg: { $size: "$skills" } } 
+        }
+    }
+  
+]
+----------------------------------------
+36.[
+   {
+        $match: {
+            skills: "Python"
+        }
+    },
+    {
+        $group: {
+            _id: { city: "$city", gender: "$gender" }, 
+            avgSalary: { $avg: "$salary" } 
+        }
+    }
+  
+]
+--------------------------------------------
+37.[
+   {
+        $match: {
+            role: "admin" 
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            count: { $sum: 1 } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+-----------------------
+38.[
+   {
+        $match: {
+            skills: "C++" 
+        }
+    },
+    {
+        $group: {
+            _id: {
+                role: "$role",
+                city: "$city"
+            },
+            count: { $sum: 1 } 
+        }
+    }
+]
+-----------------------------------------
+39.
+----------------------
+40.[
+    {
+        $unwind: "$skills" 
+    },
+    {
+        $group: {
+            _id: "$skills", 
+            maxAge: { $max: "$age" } 
+        }
+    }
+]
+--------------------------
+41.[
+    {
+        $match: {
+            $expr: { $gt: [{ $size: "$skills" }, 1] } 
+        }
+    },
+    {
+        $group: {
+            _id: { role: "$role", city: "$city" }, 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-------------------
+42.[
+       {
+        $match: {
+            salary: { $lt: 500000 } 
+        }
+    },
+    {
+        $group: {
+            _id: { gender: "$gender", city: "$city" }, 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-------------------------------
+43.[
+     {
+        $match: {
+            role: "customer"
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            avgSalary: { $avg: "$salary" } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+----------------------------------
+44.[
+     {
+        $match: {
+            skills: "Kotlin" 
+        }
+    },
+    {
+        $group: {
+            _id: "$role", 
+            avgSalary: { $avg: "$salary" } 
+        }
+    }
+]
+----------------------------
+45.[
+     {
+        $match: {
+            role: "admin" 
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-------------------
+46.[
+     {
+        $match: {
+            skills: { $all: ["Java", "Python"] } 
+        }
+    },
+    {
+        $group: {
+            _id: "$gender", 
+            count: { $sum: 1 }
+        }
+    }
+]
+-------------------
+47.[
+      {
+        $match: {
+            role: "customer" 
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            count: { $sum: 1 } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+------------------------------
+48.[
+      {
+        $match: {
+            skills: "DBMS" 
+        }
+    },
+    {
+        $group: {
+            _id: { role: "$role", city: "$city" },
+            count: { $sum: 1 } 
+        }
+    }
+]
+------------------------
+49.[
+       {
+        $project: {
+            gender: 1,
+            numSkills: { $size: "$skills" } 
+        }
+    },
+    {
+        $match: {
+            numSkills: { $gt: 3 } 
+        }
+    },
+    {
+        $group: {
+            _id: "$gender", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-----------------------------
+50.[
+        {
+        $match: {
+            salary: { $gt: 1000000 }
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            avgSkills: { $avg: { $size: "$skills" } } 
+        }
+    }
+]
+------------------------
+51.[
+         {
+        $match: {
+            role: "admin"
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            maxSalary: { $max: "$salary" } 
+        }
+    },
+    {
+        $sort: { _id: 1 } 
+    }
+]
+--------------------------
+52.[
+        {
+        $match: {
+            skills: "JavaScript" 
+        }
+    },
+    {
+        $group: {
+            _id: { role: "$role", city: "$city" }, 
+            totalSalary: { $sum: "$salary" } 
+        }
+    }
+]
+----------------
+53.[
+       {
+        $match: {
+            role: "customer" 
+        }
+    },
+    {
+        $group: {
+            _id: "$gender", 
+            avgSalary: { $avg: "$salary" } 
+        }
+    }
+]
+------------------------------------
+54.[
+      {
+        $match: {
+            skills: "React" 
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+------------------------
+55.[
+     {
+        $match: {
+            skills: "SQL"
+        }
+    },
+    {
+        $group: {
+            _id: "$age",
+            avgSalary: { $avg: "$salary" } 
+        }
+    }
+]
+-----------------
+56.[
+  {
+        $match: {
+            skills: "Django" 
+        }
+    },
+    {
+        $group: {
+            _id: "$role", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+---------------------
+57.[
+   {
+        $group: {
+            _id: "$gender", 
+            maxSkills: { $max: { $size: "$skills" } } 
+        }
+    }
+]
+-----------------
+58.[
+   {
+        $match: {
+            skills: "Node.js" 
+        }
+    },
+    {
+        $group: {
+            _id: "$city", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+----------------------
+59.[
+  {
+        $match: {
+            skills: { $all: ["HTML", "CSS"] } 
+        }
+    },
+    {
+        $group: {
+            _id: "$age", 
+            count: { $sum: 1 } 
+        }
+    }
+]
+-----------------------------
+60.[
+  {
+        $match: {
+            salary: { $gt: 1000000 } 
+        }
+    },
+    {
+        $group: {
+            _id: {
+                role: "$role",
+                gender: "$gender"
+            },
+            avgSkills: { $avg: { $size: "$skills" } } 
+        }
+    },
+    {
+        $project: {
+            _id: 0, 
+            role: "$_id.role",
+            gender: "$_id.gender",
+            avgSkills: 1
+        }
+    }
+]
+--------------------------

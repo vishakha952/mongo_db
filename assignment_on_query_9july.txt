@@ -1,0 +1,119 @@
+Answers:-
+1)db.users.countDocuments()
+2)db.users.find({role:"admin"})
+3)db.users.find({username:"Karamchandani",role:"customer"})
+4) db.users.find({username:"Sumanth Rao"})
+5)db.users.find({firstName:/R/})
+6) db.users.find({skills:"Python"})
+7)db.users.find({skills:{"$all":["Python","Java"]}})
+8)db.users.find({"$or":[{firstName:"Aryan"},{lastName:"Gupta"}]})
+9)db.collection.find({skills:{"$in":["Python"],"$nin":["Java"]}})
+10)db.users.find({lastName:"Sharma",role:"customer"})
+11) db.collection.find({skills:{$size:3}})
+12) db.users.find({firstName:/S/,role:"admin"})
+13) db.users.find({skills:"Java",role:{"$ne":"admin"}})
+14)db.users.find({role:{$exists:false}})
+15)db.users.find({"skills.3":{$exists:true}})
+16)db.users.find({role:"customer","$or":[{skills:{$exists:false}}]})
+17) db.users.find({useremail:/@regexsoftware.com$/})
+18) db.users.find({useremail:{"$not":/@gmail.com/}})
+19)db.users.find({username:/Singh$/})
+20) db.users.find({role:"admin",skills:"Java"})
+21){firstName:"Ananya",role:"customer"}
+22){role:"admin","skills.0":{$exists:true}}
+23){username:/^R/,role:"admin"}
+24){lastName:/Patel$/,role:"customer"}
+25){lastName:{"$ne":[/Patel$/]},role:"customer"}
+26){skills:"Python",role:"admin"}
+27){role:"customer",lastName:{"$not":/Gupta/}}
+28){role:"admin",useremail:/@regexsoftware.com$/}
+29){role:"customer",skills:"React"}
+30){role:"customer",skills:"SQL"}
+31){role:"admin","skills.2":{$exists:true}}
+32){role:"customer",skills:{"$in":["Java","C++"]}}
+33){role:"admin",useremail:{"$not":/@gmail.com/}}
+34){role:"admin",skills:"Java",skills:{"$ne":"Javascript"}}
+35)[{$group:{
+  _id:"null",
+  averageAge:{$avg:"$age"}
+}
+},
+  {
+  $project:{
+    _id:0
+ }
+    }
+]
+36)[{$match:{  gender:"Female",
+ skills:"Python",
+  city:"Jaipur"
+}
+ },
+ {$count:"no of Females"}
+]
+37)  [{$match: {
+age:{$gt:26}
+}},
+ {$count:"no of users"}]
+
+38)[{$match: {
+city:{$in:["New delhi","Mumbai"]}
+}},
+ {$count:"no of users"}]
+39)[{$group:{
+  _id:"$lastName",
+  countthenumberofusers:{$sum:1}
+} },
+ {
+   $project:{
+     lastName:"$_id",
+     countthenumberofusers:1
+   }
+ }]
+40)[{$group:{
+  _id:"$city",
+  countthenumberofusers:{$sum:1}
+} },
+ {
+   $project:{
+     lastName:"$_id",
+     countthenumberofusers:1
+   }
+ }]
+41)[{$match: {
+  city:"New Delhi",
+} },
+ {$count:"no of users"}
+ ]
+42)[{$match: {
+  gender:"Female",
+  city:"Jaipur"
+} },
+ {$count:"no of users"}
+ ]
+43)[{$match: {
+  gender:"Male",
+  city:"New Delhi",
+  skills:"Java"
+         }
+},
+ {$count:"no of Male"}
+ ]
+44)[{$match: {
+gender:”Male",
+  age:{$gt:24},
+  city:"Hyderabad",
+  skills:{$in:["Python","C++"]}
+         }
+},
+ {$count:"no of Male"}
+ ]
+45)[{$match: {
+  gender:"Female",
+  age:{$gt:24},
+  city:"Goa",
+  skills:{$in:["Python","C++"]}
+         }
+},
+ {$count:"no of Female"}
+ ]
